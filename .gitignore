@@ -2,3 +2,4 @@ a-fotos-usuarios/
 horusec.exe
 .horusec/
 testes_jest/node_modules/
+testes_phpUnit/vendor/
