@@ -271,3 +271,7 @@ function msgErro(msg) {
         confirmButtonColor: "#ff2448"
     });
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { validarCpf, validarCampos, novo };
+}
