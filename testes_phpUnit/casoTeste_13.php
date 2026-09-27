@@ -21,8 +21,8 @@ class CasoTeste_13 extends TestCase
 $db = new mysqli(
     "localhost",
     "root",
-    "12345678",
-    "uniride",
+    "",
+    "Uniride",
     3306
 );
 

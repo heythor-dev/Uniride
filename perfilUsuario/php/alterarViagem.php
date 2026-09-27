@@ -3,7 +3,7 @@
 
 header("Content-Type: application/json; charset=utf-8");
 session_start();
-include_once('../../php/conexao.php');
+include_once(__DIR__ . '/../../php/conexao.php');
 
 $retorno = ['status' => '', 'mensagem' => '', 'data' => []];
 

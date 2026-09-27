@@ -1,12 +1,12 @@
 <?php
 
 /*
-  TESTE: aqui vamos tenar eliminar a viajem pertecente a outro usuario
+  TESTE: usuário tentando excluir viagem de outro usuário
 */
 
 use PHPUnit\Framework\TestCase;
 
-class CasoTeste15 extends TestCase
+class CasoTeste_15 extends TestCase
 {
     private mysqli $db;
 
@@ -15,8 +15,8 @@ class CasoTeste15 extends TestCase
         $this->db = new mysqli(
             "localhost",
             "root",
-            "12345678",
-            "uniride",
+            "",
+            "Uniride",
             3306
         );
 
@@ -26,27 +26,50 @@ class CasoTeste15 extends TestCase
         );
     }
 
-    public function testExcluirViagemDeOutroUsuario(): void
+    public function testUsuarioNaoPodeExcluirViagemDeOutroUsuario(): void
     {
+        $idUsuario = 1;
+        $idViagem = 3;
+
         $resultado = $this->db->query("
             SELECT id, usuario_id
             FROM grupo_viagem
-            LIMIT 1
+            WHERE id = $idViagem
         ");
 
-        $this->assertNotFalse($resultado);
-        $this->assertGreaterThan(0, $resultado->num_rows);
+        $this->assertGreaterThan(
+            0,
+            $resultado->num_rows,
+            "A viagem informada não existe."
+        );
 
         $viagem = $resultado->fetch_assoc();
 
-        $usuarioDono = (int) $viagem["usuario_id"];
-        $outroUsuario = $usuarioDono + 1;
+        $this->assertNotSame(
+            $idUsuario,
+            (int) $viagem['usuario_id'],
+            "A viagem deve pertencer a outro usuário."
+        );
 
-        $podeExcluir = $usuarioDono === $outroUsuario;
+        $_GET['id'] = $idViagem;
 
-        $this->assertFalse(
-            $podeExcluir,
-            "Um usuário não deve poder excluir uma viagem pertencente a outro usuário."
+        ob_start();
+
+        include __DIR__ . '/../perfilUsuario/php/excluirViagem.php';
+
+        $resposta = ob_get_clean();
+
+        $dados = json_decode($resposta, true);
+
+        $this->assertIsArray(
+            $dados,
+            "A exclusão deve retornar uma resposta JSON."
+        );
+
+        $this->assertSame(
+            'nok',
+            $dados['status'],
+            "O sistema não deve permitir excluir uma viagem de outro usuário."
         );
     }
 
